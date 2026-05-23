@@ -1,3 +1,4 @@
+HEAD
 # ⚖️ Legal Case Prediction using RAG (Retrieval-Augmented Generation)
 
 > **GAI48** — A production-grade AI system that retrieves relevant past legal judgments and predicts case outcomes with cited precedents, using structured legal reasoning and citation chains.
@@ -305,3 +306,7 @@ pytest tests/ -v
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+# Casechain-ai
+I built a RAG system that retrieves past court judgments using FAISS semantic search and a NetworkX citation graph, then uses LangChain with Claude to predict case outcomes with cited legal precedents — served via FastAPI, tracked with MLflow, and deployed with Docker
+92a34b328548d4c75933059fe4ab898ff04f7795
