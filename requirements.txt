@@ -1,0 +1,62 @@
+# ============================================================
+# Legal RAG Project - Dependencies
+# ============================================================
+# Install with: pip install -r requirements.txt
+
+# --- Core LangChain (the main RAG framework) ---
+# LangChain helps us build the pipeline: retrieve → reason → respond
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-anthropic==0.1.23        # For Anthropic Claude LLM
+langchain-openai==0.1.25           # For OpenAI GPT (alternative)
+
+# --- Vector Search (FAISS) ---
+# FAISS stores embeddings and finds nearest neighbors fast
+faiss-cpu==1.8.0                   # Use faiss-gpu if you have a GPU
+
+# --- Text Embeddings ---
+# sentence-transformers converts text → numerical vectors
+sentence-transformers==3.0.1
+torch==2.3.0                       # Required by sentence-transformers
+
+# --- Citation Graph ---
+# NetworkX helps us build and traverse the citation graph
+networkx==3.3
+
+# --- API Framework ---
+# FastAPI is a modern, fast web framework for building REST APIs
+fastapi==0.111.0
+uvicorn[standard]==0.30.1          # ASGI server to run FastAPI
+pydantic==2.7.4                    # Data validation for API models
+
+# --- Experiment Tracking ---
+# MLflow logs all our metrics: accuracy, confidence, latency, etc.
+mlflow==2.14.3
+
+# --- Data Handling ---
+pandas==2.2.2                      # For loading CSV/JSON datasets
+numpy==1.26.4                      # Numerical operations
+scikit-learn==1.5.1                # For classification metrics
+
+# --- Text Processing ---
+# Used to clean and preprocess legal text before embedding
+nltk==3.8.1
+spacy==3.7.5                       # Advanced NLP (entity recognition in legal text)
+
+# --- HTTP & Async ---
+httpx==0.27.0                      # Async HTTP client
+python-multipart==0.0.9            # For file uploads in FastAPI
+
+# --- Environment & Config ---
+python-dotenv==1.0.1               # Loads .env file variables
+pyyaml==6.0.1                      # YAML config files
+
+# --- Testing ---
+pytest==8.2.2
+pytest-asyncio==0.23.7
+httpx==0.27.0                      # For testing FastAPI endpoints
+
+# --- Visualization (optional, for notebooks) ---
+matplotlib==3.9.0
+seaborn==0.13.2
+plotly==5.22.0

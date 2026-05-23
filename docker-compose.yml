@@ -1,0 +1,70 @@
+# ============================================================
+# docker-compose.yml
+# ============================================================
+#
+# WHAT IS DOCKER COMPOSE?
+# Docker Compose lets you run MULTIPLE containers together.
+# Our system needs:
+#   1. FastAPI app (the main application)
+#   2. MLflow server (experiment tracking dashboard)
+#
+# Without Compose: You'd need to start each container manually
+# With Compose: One command starts everything: docker-compose up
+#
+# HOW TO USE:
+#   docker-compose up --build    # Build and start all services
+#   docker-compose down          # Stop all services
+#   docker-compose logs api      # View logs from the API service
+# ============================================================
+
+version: '3.8'
+
+services:
+  # ---- Service 1: FastAPI Application ----
+  api:
+    build: .                     # Build from Dockerfile in current directory
+    container_name: legal-rag-api
+    ports:
+      - "8000:8000"              # Host:Container port mapping
+    environment:
+      # These variables are passed from .env file or set here
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-anthropic}
+      - MLFLOW_TRACKING_URI=http://mlflow:5000   # Talk to MLflow service
+    volumes:
+      # Mount data directory: changes persist between container restarts
+      - ./data:/app/data
+      - ./mlflow_runs:/app/mlflow_runs
+    depends_on:
+      - mlflow                   # Wait for MLflow to start first
+    restart: unless-stopped      # Auto-restart if the container crashes
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  # ---- Service 2: MLflow Tracking Server ----
+  # MLflow gives us a web dashboard to view all experiment metrics
+  # Access it at: http://localhost:5000
+  mlflow:
+    image: python:3.10-slim      # Use official Python image
+    container_name: legal-rag-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_runs:/mlflow_runs
+    command: >
+      bash -c "pip install mlflow && 
+               mlflow server 
+               --host 0.0.0.0 
+               --port 5000 
+               --backend-store-uri /mlflow_runs
+               --default-artifact-root /mlflow_runs/artifacts"
+    restart: unless-stopped
+
+# Networks: both services are on the same network so they can talk to each other
+networks:
+  default:
+    name: legal-rag-network
